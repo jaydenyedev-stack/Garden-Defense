@@ -1,8 +1,32 @@
 #1 引入需要的模块
+import os
 import pygame
 import random
 #1 配置图片地址
 IMAGE_PATH = 'imgs/'
+# 中文字体配置，避免 pygame 默认字体无法显示中文
+CHINESE_FONT_PATHS = [
+    '/System/Library/Fonts/PingFang.ttc',
+    '/System/Library/Fonts/STHeiti Light.ttc',
+    '/System/Library/Fonts/Supplemental/Songti.ttc',
+    '/System/Library/Fonts/Supplemental/Kaiti.ttc',
+    '/Library/Fonts/Arial Unicode.ttf',
+    'C:/Windows/Fonts/simhei.ttf',
+    'C:/Windows/Fonts/msyh.ttc',
+    '/usr/share/fonts/truetype/wqy/wqy-microhei.ttc',
+    '/usr/share/fonts/opentype/noto/NotoSansCJK-Regular.ttc',
+]
+CHINESE_FONT_NAMES = [
+    'pingfangsc',
+    'hiraginosansgb',
+    'stheitisc',
+    'songti',
+    'kaiti',
+    'simhei',
+    'microsoftyahei',
+    'notosanscjk',
+    'wenquanyimicrohei',
+]
 #1 设置页面宽高
 scrrr_width=800
 scrrr_height =560
@@ -212,9 +236,19 @@ class MainGame():
     #2 文本绘制
     def draw_text(self, content, size, color):
         pygame.font.init()
-        font = pygame.font.SysFont('kaiti', size)
+        font = self.get_chinese_font(size)
         text = font.render(content, True, color)
         return text
+
+    def get_chinese_font(self, size):
+        for font_path in CHINESE_FONT_PATHS:
+            if os.path.exists(font_path):
+                return pygame.font.Font(font_path, size)
+        for font_name in CHINESE_FONT_NAMES:
+            matched_font = pygame.font.match_font(font_name)
+            if matched_font:
+                return pygame.font.Font(matched_font, size)
+        return pygame.font.SysFont(None, size)
 
     #2 加载帮助提示
     def load_help_text(self):
